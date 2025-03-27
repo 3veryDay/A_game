@@ -1,0 +1,57 @@
+erDiagram
+    USER ||--|| SPOTIFY_ACCOUNT : connects
+    USER {
+        string user_id PK
+        string email
+        string username
+        string password
+    }
+    
+    SPOTIFY_ACCOUNT {
+        string spotify_id PK
+        string access_token
+        string refresh_token
+    }
+    
+    RUNNING_SESSION ||--|| USER : creates
+    RUNNING_SESSION {
+        string session_id PK
+        datetime session_date
+        int total_time
+        float total_distance
+        string pace
+        string avg_speed
+    }
+    
+    RUNNING_SESSION ||--o{ INTERVAL : contains
+    INTERVAL {
+        string interval_id PK
+        string name
+        int total_interval_time
+    }
+    
+    INTERVAL ||--o{ INTERVAL_SEGMENT : comprises
+    INTERVAL_SEGMENT {
+        string segment_id PK
+        string type "walk|run|sprint"
+        int duration
+        float target_speed
+        string music_selection_type "random|playlist|specific"
+        string music_source_id
+    }
+    
+    PLAYLIST ||--o{ RUNNING_SESSION : used_in
+    PLAYLIST {
+        string playlist_id PK
+        string name
+        string source
+    }
+    
+    MUSIC_TRACK {
+        string track_id PK
+        string title
+        string artist
+        int duration
+    }
+    
+    PLAYLIST ||--o{ MUSIC_TRACK : contains
