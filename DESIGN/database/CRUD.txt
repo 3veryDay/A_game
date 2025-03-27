@@ -1,0 +1,52 @@
+-- ENUM 타입 정의
+CREATE TYPE segment_type AS ENUM ('walk', 'run', 'sprint');
+CREATE TYPE music_selection_type AS ENUM ('random', 'playlist', 'specific');
+CREATE TYPE terrain_type AS ENUM ('road', 'trail', 'treadmill', 'track');
+CREATE TYPE session_status AS ENUM ('completed', 'cancelled', 'interrupted');
+
+-- app_user 테이블
+CREATE TABLE app_user (
+    user_id BIGSERIAL NOT NULL PRIMARY KEY,
+    email VARCHAR(150),
+    username VARCHAR(100), 
+    password VARCHAR(100),
+    last_login TIMESTAMP
+);
+
+-- interval_segment 테이블
+CREATE TABLE interval_segment (
+    segment_id UUID NOT NULL PRIMARY KEY,
+    duration DECIMAL(10,2) NOT NULL,
+    type segment_type NOT NULL,
+    target_speed DECIMAL(10,2),
+    music_selection_type music_selection_type NOT NULL,
+    music_source_id TEXT
+);
+
+-- running_session 테이블
+CREATE TABLE running_session (
+    session_id BIGSERIAL NOT NULL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    start_time TIMESTAMP NOT NULL,
+    end_time TIMESTAMP NOT NULL,
+    total_duration DECIMAL(10,2),
+    total_distance DECIMAL(10,2),
+    avg_pace DECIMAL(10,2),
+    avg_speed DECIMAL(10,2),
+    cal_burned DECIMAL(10,2),
+    terrain_type terrain_type NOT NULL,
+    status session_status NOT NULL,
+    CONSTRAINT fk_running_session_user FOREIGN KEY (user_id) REFERENCES app_user(user_id)
+);
+
+-- interval 테이블
+CREATE TABLE interval (
+    interval_id BIGSERIAL NOT NULL PRIMARY KEY,
+    session_id BIGINT NOT NULL,
+    segment_ids JSON,
+    interval_name VARCHAR(100) NOT NULL,
+    total_interval_time INT NOT NULL,
+    total_cal_burned DECIMAL(10,2), 
+    last_run TIMESTAMP,
+    CONSTRAINT fk_interval_session FOREIGN KEY (session_id) REFERENCES running_session(session_id)
+);
