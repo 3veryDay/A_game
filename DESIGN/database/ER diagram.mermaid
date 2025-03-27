@@ -28,6 +28,8 @@ erDiagram
         string interval_id PK
         string name
         int total_interval_time
+        int total_cal_burned 
+        datetime last_run
     }
     
     INTERVAL ||--o{ INTERVAL_SEGMENT : comprises
