@@ -16,11 +16,17 @@ erDiagram
     RUNNING_SESSION ||--|| USER : creates
     RUNNING_SESSION {
         string session_id PK
+        string user_id   
+        datetime start_time
+        datetime end_time
         datetime session_date
-        int total_time
+        float total_duration
         float total_distance
-        string pace
-        string avg_speed
+        float avg_pace
+        float avg_speed
+        float cal_burned
+        string terrain_type "road|trail|treadmill|track|else"
+        status "completed|cancelled|interrupted"
     }
     
     RUNNING_SESSION ||--o{ INTERVAL : contains
