@@ -59,6 +59,7 @@ public class GreetingsController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        //FIRST trying authentication
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate
@@ -72,14 +73,16 @@ public class GreetingsController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        //SECOND (if valid) set user context
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
+        //THIRD generate jwtToken using user context
         String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
 
+        //FOURTH get roles (제거 가능)
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
-
+        //FIFTH (with userdetail, jwtToken, roles)
         LoginResponse response = new LoginResponse(userDetails.getUsername(), jwtToken, roles);
 
         return ResponseEntity.ok(response);

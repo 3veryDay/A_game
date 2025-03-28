@@ -1,11 +1,15 @@
 package com.example.securitydemo;
 
+import jwt.AuthEntryPointJwt;
+import jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authorization.method.AuthorizeReturnObject;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationConverter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
 
@@ -32,32 +38,64 @@ public class SecurityConfig {
     //how ? -> spring has all info about configurations, with the context, spring will provide the database bean
     @Autowired
     DataSource dataSource;
+    //create to handle unauthorized requests
+    @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;
+    //filter type will check header
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter(){
+        return new AuthTokenFilter();
+    }
 
-    //to ignore the default bean in SrpingbottWebSecurityConfiguration
-    //mark as bean
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        //permit all requests to /h2-console withcout security filter chain acting upon it
-        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/h2-console/**").permitAll()
-                //any request should be authenticated (default behavior)
+        http.authorizeHttpRequests(authorizeRequests ->
+                authorizeRequests.requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/api/signin").permitAll()
+                        //이거 말고는 다 인증을 해야함
                 .anyRequest().authenticated());
-        //no more cookie! (stateless)
-        http.sessionManagement(session
-                ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        //basic, spring security should use basic http authentication
-//        http.formLogin(withDefaults());
-        http.httpBasic(withDefaults());
-        //returning the object
-
-        //
-        http.headers(headers->
-                headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
-
-        //계속 h2-console이 안 들어가지는 걸 막기 위해서 csrf를 disable
-        http.csrf(csrf ->  csrf.disable());
+        //REST API, stateless
+        http.sessionManagement (
+                session ->
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS)
+                        );
+        //custom handler를 authenticationEntryPoint을 더해서, unauthorizedHandler를 사용하겠다.
+        http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
+        http.headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                );
+        http.csrf(csrf->csrf.disable());
+        http.addFilterBefore(authenticationJwtTokenFilter(),
+                            UsernamePasswordAuthenticationFilter.class);
         return http.build();
-        //securityFilterChain Object is being returned
+
     }
+    //to ignore the default bean in SrpingbottWebSecurityConfiguration
+    //mark as bean
+//    @Bean
+//    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+//        //permit all requests to /h2-console withcout security filter chain acting upon it
+//        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/h2-console/**").permitAll()
+//                //any request should be authenticated (default behavior)
+//                .anyRequest().authenticated());
+//        //no more cookie! (stateless)
+//        http.sessionManagement(session
+//                ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//        //basic, spring security should use basic http authentication
+////        http.formLogin(withDefaults());
+//        http.httpBasic(withDefaults());
+//        //returning the object
+//
+//        //
+//        http.headers(headers->
+//                headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
+//
+//        //계속 h2-console이 안 들어가지는 걸 막기 위해서 csrf를 disable
+//        http.csrf(csrf ->  csrf.disable());
+//        return http.build();
+//        //securityFilterChain Object is being returned
+//    }
 
     //Authentication Provider처럼 PasswordEncoder랑 userDetailsService를 사용해서 AUthenticate 하는 인터페이스 임.
 
@@ -97,6 +135,12 @@ public class SecurityConfig {
         //this is inbuilt, if you want to change the algorithm, you insert the algorithm
         return new BCryptPasswordEncoder();
         //authomatically, Salt is generated
+    }
+
+    @Bean
+    public AuthenticationManager authenticationmanager(AuthenticationConfiguration builder)
+    throws Exception{
+        return builder.getAuthenticationManager();
     }
 
 }
