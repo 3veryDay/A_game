@@ -40,7 +40,7 @@ public class SecurityConfig {
     DataSource dataSource;
     //create to handle unauthorized requests
     @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    AuthEntryPointJwt unauthorizedHandler;
     //filter type will check header
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter(){
