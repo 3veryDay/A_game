@@ -28,7 +28,7 @@ const Login = () => {
             //pass json body of the response
             const data = await response.json();
             console.log(data);
-            setJwt(data.token)
+            setJwt(data.jwtToken);
             setMessage("Login Successful")
         }else {
             setMessage("login failed, check credentials")
