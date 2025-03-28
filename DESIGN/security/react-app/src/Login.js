@@ -46,6 +46,37 @@ const Login = () => {
 
         <div>
             <h2>Login</h2>
+            <form onSubmit = {handleLogin} >
+                <div>
+                    <label>Username : </label>
+                    <input
+                    type = "text"
+                    value = {username}
+                    //event handler, change in input box,
+                    //  change username right away (recorded in state)
+                    onChange = {(e) => setUsername(e.target.value)} />
+
+                </div>
+                <div>
+                    <label>Password : </label>
+                    <input
+                    type = "password"
+                    value = {password}
+                    //event handler, change in input box,
+                    //  change username right away (recorded in state)
+                    onChange = {(e) => setPassword(e.target.value)} />
+
+                </div>
+
+                <button type = "submit">
+                    Login
+                </button>
+                
+            </form>
+            
+            // check if message has value
+            {message && <p>{message}</p>}
+            {jwt && <p>{jwt}</p>}
         </div>
     );
 }
