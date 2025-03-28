@@ -3,6 +3,7 @@ package com.example.securitydemo;
 import jwt.AuthEntryPointJwt;
 import jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,9 +40,15 @@ public class SecurityConfig {
     @Autowired
     DataSource dataSource;
     //create to handle unauthorized requests
-    @Autowired
-    AuthEntryPointJwt unauthorizedHandler;
+//    @Autowired
+//    AuthEntryPointJwt unauthorizedHandler;
     //filter type will check header
+    private final AuthEntryPointJwt unauthorizedHandler;
+
+    public SecurityConfig(AuthEntryPointJwt unauthorizedHandler) {
+        this.unauthorizedHandler = unauthorizedHandler;
+    }
+
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter(){
         return new AuthTokenFilter();
@@ -71,6 +78,7 @@ public class SecurityConfig {
         return http.build();
 
     }
+
     //to ignore the default bean in SrpingbottWebSecurityConfiguration
     //mark as bean
 //    @Bean
@@ -98,36 +106,57 @@ public class SecurityConfig {
 //    }
 
     //Authentication Provider처럼 PasswordEncoder랑 userDetailsService를 사용해서 AUthenticate 하는 인터페이스 임.
+    @Bean
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+
+        return new JdbcUserDetailsManager(dataSource);
+    }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        //object of userDetails, construct the object
-        //not hardcoded, {noop} is a prefix that tells DelegatingPasswordEncoder that the password is not encoded
-        UserDetails admin = User.withUsername("admin")
-                //{noop} is to tell encoder that the password is not encoded
-                .password(passwordEncoder().encode("adminPass"))
-                .roles("ADMIN")
-                .build();
+    public CommandLineRunner initData(UserDetailsService userDetailsService){
+        return args -> {
+            JdbcUserDetailsManager manager = (JdbcUserDetailsManager) userDetailsService;
+            JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
 
+            if(!userDetailsManager.userExists("user1")) {
+                UserDetails user1 = User.withUsername("user3")
+                        .password(passwordEncoder().encode("password1"))
+                        .roles("USER")
+                        .build();
 
-        UserDetails user1 = User.withUsername("user1")
-                //개발을 위해서 암호화 생략 {noop}
-                //DB에 저장할 때, password을 encrypt 해서 저장해야 함.
-                .password(passwordEncoder().encode("password1"))
-                .roles("USER")
-                .build();
-        //return 안에 넣어서 객체를 생성
-        //return new InMemoryUserDetailsManager(user1, admin);
-        //create users in a database
-
-
-        //use Database to store users, but tables need to be produced before!
-        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
-        userDetailsManager.createUser(user1);
-        userDetailsManager.createUser(admin);
-        return userDetailsManager;
-
+                userDetailsManager.createUser(user1);
+            }
+        };
     }
+
+//    public UserDetailsService userDetailsService() {
+//        //object of userDetails, construct the object
+//        //not hardcoded, {noop} is a prefix that tells DelegatingPasswordEncoder that the password is not encoded
+//        UserDetails admin = User.withUsername("admin")
+//                //{noop} is to tell encoder that the password is not encoded
+//                .password(passwordEncoder().encode("adminPass"))
+//                .roles("ADMIN")
+//                .build();
+//
+//
+//        UserDetails user1 = User.withUsername("user1")
+//                //개발을 위해서 암호화 생략 {noop}
+//                //DB에 저장할 때, password을 encrypt 해서 저장해야 함.
+//                .password(passwordEncoder().encode("password1"))
+//                .roles("USER")
+//                .build();
+//        //return 안에 넣어서 객체를 생성
+//        //return new InMemoryUserDetailsManager(user1, admin);
+//        //create users in a database
+//
+//
+//        //use Database to store users, but tables need to be produced before!
+//        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+//        userDetailsManager.createUser(user1);
+//        userDetailsManager.createUser(admin);
+//        return userDetailsManager;
+//
+//    }
     //interface for encoding passwords ( most preferred is BCrypt)
     @Bean
     public PasswordEncoder passwordEncoder() {

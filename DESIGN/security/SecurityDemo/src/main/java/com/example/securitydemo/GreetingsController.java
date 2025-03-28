@@ -4,6 +4,7 @@ import jwt.JwtUtils;
 import jwt.LoginRequest;
 import jwt.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +34,15 @@ import java.util.Map;
 @EnableMethodSecurity
 public class GreetingsController {
 
-    private AuthenticationManager authenticationManager;
 
-    private JwtUtils jwtUtils;
 
+    private final AuthenticationManager authenticationManager;
+    @Autowired
+    public GreetingsController(@Lazy AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+    @Autowired
+    private  JwtUtils jwtUtils;
 
 
     @GetMapping("/hello")
@@ -80,7 +87,7 @@ public class GreetingsController {
 
         //FOURTH get roles (제거 가능)
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         //FIFTH (with userdetail, jwtToken, roles)
         LoginResponse response = new LoginResponse(userDetails.getUsername(), jwtToken, roles);
