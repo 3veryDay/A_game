@@ -74,7 +74,7 @@ const Login = () => {
                 
             </form>
             
-            // check if message has value
+            
             {message && <p>{message}</p>}
             {jwt && <p>{jwt}</p>}
         </div>
