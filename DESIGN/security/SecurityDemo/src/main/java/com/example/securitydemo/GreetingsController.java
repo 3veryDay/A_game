@@ -94,4 +94,21 @@ public class GreetingsController {
 
         return ResponseEntity.ok(response);
     }
+
+    //after login
+    @GetMapping("/profile")
+    public ResponseEntity<?> getUserProfile(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("username", userDetails.getUsername());
+        profile.put("roles", userDetails.getAuthorities()
+                .stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList()));
+        profile.put("message", "this is user specific content from backend");
+        return ResponseEntity.ok(profile);
+    }
 }
