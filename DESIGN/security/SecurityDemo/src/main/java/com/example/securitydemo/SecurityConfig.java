@@ -51,7 +51,7 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests.requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/api/signin").permitAll()
+                .requestMatchers("/signin").permitAll()
                         //이거 말고는 다 인증을 해야함
                 .anyRequest().authenticated());
         //REST API, stateless
