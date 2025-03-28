@@ -37,7 +37,7 @@ const Login = () => {
 
         }catch(error) {
             console.log("Error : " + error );
-            setMessgae("An error occured. plz try again.")
+            setMessage("An error occured. plz try again.")
         }
         
 
@@ -49,3 +49,5 @@ const Login = () => {
         </div>
     );
 }
+
+export default Login;
