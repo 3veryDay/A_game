@@ -16,6 +16,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +28,8 @@ import java.util.stream.Collectors;
 
 import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole;
 import org.springframework.security.core.Authentication;
+
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 @RestController
@@ -38,17 +42,30 @@ public class GreetingsController {
 
     private final AuthenticationManager authenticationManager;
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     public GreetingsController(@Lazy AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
     @Autowired
     private  JwtUtils jwtUtils;
+    @Autowired
+    private DataSource dataSource;
 
 
+    //이게 static 하고 main이네 근데 얘만됨.
     @GetMapping("/hello")
     public static String main(String[] args) {
         return "Hello, World!";
     }
+
+    //이거 됨
+    @GetMapping("/api/hi")
+    public static String hi() {return "Hi, World!";}
+
+    //여기를 통해서 signup하면 role = user로 설정됨
+
 
     //check user credentials before acting on method
     @PreAuthorize("hasRole('ADMIN')or hasRole('USER')")
@@ -67,9 +84,9 @@ public class GreetingsController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         //FIRST trying authentication
-        Authentication authentication;
+       Authentication authentication;
         try {
-            authentication = authenticationManager.authenticate
+             authentication = authenticationManager.authenticate
                     (new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         } catch (AuthenticationException exception) {
             Map<String, Object> map = new HashMap<>();

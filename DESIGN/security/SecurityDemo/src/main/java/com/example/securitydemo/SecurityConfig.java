@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authorization.method.AuthorizeReturnObject;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -56,11 +57,13 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests.requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/signin").permitAll()
-
-                        //이거 말고는 다 인증을 해야함
+        http.csrf(csrf->csrf.disable());
+        http.
+                authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                //public endpoints that anyone can access
+                .requestMatchers("/h2-console/**", "/signin", "/hello", "/api/hi").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/signup").permitAll()
+                // Protected endpoints that require authentication
                 .anyRequest().authenticated());
         //REST API, stateless
         http.sessionManagement (
@@ -73,7 +76,7 @@ public class SecurityConfig {
         http.headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.sameOrigin())
                 );
-        http.csrf(csrf->csrf.disable());
+
         http.addFilterBefore(authenticationJwtTokenFilter(),
                             UsernamePasswordAuthenticationFilter.class);
         return http.build();

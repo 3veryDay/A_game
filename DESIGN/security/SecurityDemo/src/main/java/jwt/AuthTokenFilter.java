@@ -32,6 +32,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         logger.debug("AuthTokenFilter called for URI : {}", request.getRequestURI());
+        String path = request.getRequestURI();
+        if (path.equals("/signin") || path.equals("/signup")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             //extract the JWT token
             String jwt = parseJwt(request);
