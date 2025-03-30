@@ -1,0 +1,14 @@
+
+## 🔍 에러 해석
+
+```
+Could not resolve parameter [0] in ...
+Content-Type 'multipart/form-data' ... is not supported
+```
+
+### 즉...
+- `@RequestBody`는 **JSON 요청 (`application/json`)**일 때 사용해야 해.
+- 근데 지금 너는 `multipart/form-data`로 요청을 보내고 있어 (예: 파일 업로드 할 때 주로 쓰는 방식).
+- 이 상태에서는 JSON 파싱이 안 돼 → 파라미터 주입 실패 → 위 에러 발생
+
+---

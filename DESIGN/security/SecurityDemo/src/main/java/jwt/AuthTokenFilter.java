@@ -33,7 +33,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         logger.debug("AuthTokenFilter called for URI : {}", request.getRequestURI());
         String path = request.getRequestURI();
-        if (path.equals("/signin") || path.equals("/signup")) {
+        if (path.contains("/login") || path.equals("/signup")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -41,6 +41,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             //extract the JWT token
             String jwt = parseJwt(request);
+            System.out.println("JWT from header : " + jwt);
             //비지 않고, 유효하다면
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 //username extract

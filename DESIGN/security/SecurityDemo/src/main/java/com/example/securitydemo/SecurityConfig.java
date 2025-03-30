@@ -62,7 +62,7 @@ public class SecurityConfig {
                 authorizeHttpRequests(authorizeRequests -> authorizeRequests
                 //public endpoints that anyone can access
                 .requestMatchers("/h2-console/**", "/signin", "/hello", "/api/hi").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/signup", "/users/login").permitAll()
                 // Protected endpoints that require authentication
                 .anyRequest().authenticated());
         //REST API, stateless
