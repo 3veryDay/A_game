@@ -1,0 +1,77 @@
+.container {
+    min-height: 100vh;
+    background-color: #121212;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  
+  .card {
+    background-color: #1f1f1f;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .segment {
+    border: 1px solid #333;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    background-color: #2a2a2a;
+  }
+  
+  .segmentTitle {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #a3a3a3;
+  }
+  
+  .input,
+  .select {
+    display: block;
+    width: 100%;
+    background-color: #3a3a3a;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+  
+  .input::placeholder {
+    color: #a3a3a3;
+  }
+  
+  .input:focus,
+  .select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #1db954;
+  }
+  
+  .button {
+    background-color: #1db954;
+    color: black;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    font-size: 1rem;
+  }
+  
+  .button:hover {
+    background-color: #1ed760;
+  }

@@ -1,0 +1,75 @@
+.container {
+    min-height: 100vh;
+    background-color: #121212;
+    color: white;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .card {
+    background-color: #1f1f1f;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    color: #a3a3a3;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .segment {
+    border: 1px solid #333;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #2a2a2a;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+  }
+  
+  .button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    transition: background-color 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .green {
+    background-color: #1db954;
+    color: black;
+  }
+  
+  .green:hover {
+    background-color: #1ed760;
+  }
+  
+  .gray {
+    background-color: #6b7280;
+    color: white;
+  }
+  
+  .gray:hover {
+    background-color: #9ca3af;
+  }
