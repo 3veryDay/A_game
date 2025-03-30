@@ -1,3 +1,4 @@
+// src/pages/Page5Result.jsx
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -10,13 +11,15 @@ const Page5Result = () => {
   const startNow = searchParams.get('start') === 'now';
 
   useEffect(() => {
+    if (details.length === 0 || repeatCount === 0) return;
+
     const saveInterval = async () => {
       const group = {
         groupOrder: 1,
         repeatCount: repeatCount,
         segments: details.map((d, i) => ({
           segmentOrder: i + 1,
-          duration: d.duration,
+          duration: parseFloat(d.duration),
           type: d.type,
           targetSpeed: parseFloat(d.speed),
           musicSelectionType: d.music.includes('playlist') ? 'PLAYLIST' : 'GENRE',
@@ -25,9 +28,11 @@ const Page5Result = () => {
       };
 
       const requestData = {
-        intervalName: '사용자 지정 러닝',
+        intervalName: 'My Auto Session Interval',
         groups: [group],
       };
+
+      console.log('보내는 데이터:', requestData); // 디버깅용
 
       try {
         const response = await axios.post('http://localhost:8080/api/intervals', requestData);
