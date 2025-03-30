@@ -23,6 +23,32 @@
   margin-bottom: 2rem;
   text-align: center;
 }
+.timeRow {
+  display: flex;
+  flex-wrap: wrap; /* 좁은 화면에서 줄바꿈 가능 */
+  align-items: center;
+  gap: 12px;        /* 요소들 사이 간격 */
+  justify-content : center;
+  margin-bottom: 12px;
+}
+.timeInput {
+  padding: 6px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  width: 50px;
+  text-align: center;
+  background-color: #282828;  /* 다크 그레이 */
+  color: #FFFFFF;             /* 밝은 텍스트 */
+  box-shadow: inset 0 0 0 1px #3e3e3e;
+  transition: all 0.2s ease;
+}
+
+.timeInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #1DB954; /* Spotify green highlight */
+}
+
 
 .input {
   display: block;
