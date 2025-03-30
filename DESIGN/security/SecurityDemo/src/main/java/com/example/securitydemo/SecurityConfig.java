@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authorization.method.AuthorizeReturnObject;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,8 +26,13 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.sql.DataSource;
+
+import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -59,9 +65,11 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf->csrf.disable());
         http.
-                authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                cors(Customizer.withDefaults())
+
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                 //public endpoints that anyone can access
-                .requestMatchers("/h2-console/**", "/signin", "/hello", "/api/hi").permitAll()
+                .requestMatchers("/h2-console/**", "/signin", "/hello", "/api/hi", "/users/signup", "/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/signup", "/users/login").permitAll()
                 // Protected endpoints that require authentication
                 .anyRequest().authenticated());
@@ -82,6 +90,20 @@ public class SecurityConfig {
         return http.build();
 
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
 
     //to ignore the default bean in SrpingbottWebSecurityConfiguration
     //mark as bean

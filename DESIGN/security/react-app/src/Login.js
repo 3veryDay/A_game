@@ -15,7 +15,7 @@ const Login = () => {
         e.preventDefault();
         try {
             //until fetch request is complete - fetch(url)
-            const response = await fetch("http://localhost:8080/signin",{
+            const response = await fetch("http://localhost:8080/users/login",{
             method : "POST" ,
             headers : {
                 "Content-Type" : "application/json",

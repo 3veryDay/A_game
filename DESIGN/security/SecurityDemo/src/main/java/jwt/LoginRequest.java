@@ -8,6 +8,7 @@ public class LoginRequest {
         return username;
     }
     public void setUsername(String username){
+        System.out.println("setUsername called with: " + username);
         this.username = username;
     }
     public String getPassword(){
@@ -15,6 +16,7 @@ public class LoginRequest {
     }
 
     public void setPassword(String password) {
+        System.out.println("setPassword called with: " + password);
         this.password = password;
     }
 }
