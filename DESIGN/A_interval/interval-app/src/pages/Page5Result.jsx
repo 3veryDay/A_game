@@ -1,4 +1,3 @@
-// src/pages/Page5Result.jsx
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -17,14 +16,19 @@ const Page5Result = () => {
       const group = {
         groupOrder: 1,
         repeatCount: repeatCount,
-        segments: details.map((d, i) => ({
-          segmentOrder: i + 1,
-          duration: parseFloat(d.duration),
-          type: d.type,
-          targetSpeed: parseFloat(d.speed),
-          musicSelectionType: d.music.includes('playlist') ? 'PLAYLIST' : 'GENRE',
-          musicSourceId: d.music,
-        })),
+        segments: details.map((d, i) => {
+          const musicSelectionType = d.musicType ?? 'NONE';
+          const musicSourceId = d.music_info ?? null;
+
+          return {
+            segmentOrder: i + 1,
+            duration: parseFloat(d.duration),
+            type: d.type,
+            targetSpeed: parseFloat(d.speed),
+            musicSelectionType,
+            musicSourceId,
+          };
+        }),
       };
 
       const requestData = {
