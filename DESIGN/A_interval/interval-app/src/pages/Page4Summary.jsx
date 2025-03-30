@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { useInterval } from '../context/IntervalContext';
 import styles from './Page4Summary.module.css';
 
+
+// 여기서 이름 설정 
 const Page4Summary = () => {
   const { details, repeatCount } = useInterval();
   const navigate = useNavigate();
