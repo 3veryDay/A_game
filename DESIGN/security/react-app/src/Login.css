@@ -65,6 +65,20 @@ body {
   button[type="submit"]:hover {
     background-color: #1ed760;
   }
+  button[type="logout"] {
+    background-color: #052e13; /* Spotify green */
+    color: #ffffff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button[type="logout"]:hover {
+    background-color: #01521d;
+  }
   
   /* Profile Styling */
   .profile-container {

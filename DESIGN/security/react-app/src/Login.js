@@ -78,6 +78,14 @@ const fetchUserProfile = async (token) => {
 
 };
 
+const handleLogout = () => {
+    setUsername("");
+    setPassword("");
+    setJwt("");
+    setProfile(null);
+    setMessage("You have been logged out");
+}
+
 
 
     return (
@@ -122,7 +130,9 @@ const fetchUserProfile = async (token) => {
                     <p>Username : {profile.username}</p>
                     <p>Role : {profile.roles.join(", ")}</p>
                     <div className = "message">Message : {profile.message}</div>
+                    <button type="logout" onClick={handleLogout}>Logout</button>
                 </div>
+                
             )}
             
 
