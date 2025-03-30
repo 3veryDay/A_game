@@ -1,5 +1,6 @@
 import { useState } from "react";
-
+import './Login.css'; // Path to your CSS file
+//rest of your code
 const Login = () => {
 
     //states created
@@ -33,7 +34,7 @@ const Login = () => {
             setMessage("Login Successful");
             fetchUserProfile(data.jwtToken);
         }else {
-            setMessage("login failed, check credentials");
+            setMessage("Please check your username or password");
             
         }
 
@@ -81,7 +82,7 @@ const fetchUserProfile = async (token) => {
 
     return (
 
-        <div>
+        <div className = "login-container">
             {!profile ?(
             <form onSubmit = {handleLogin} >
                 <div>
@@ -102,6 +103,7 @@ const fetchUserProfile = async (token) => {
                     //event handler, change in input box,
                     //  change username right away (recorded in state)
                     onChange = {(e) => setPassword(e.target.value)} />
+                    {message && <div className="message">{message}</div>}
 
                 </div>
 
@@ -115,11 +117,11 @@ const fetchUserProfile = async (token) => {
 
 
                 //everything to render profile
-                <div>
+                <div className="profile-container">
                     <h3>User Profile</h3>
                     <p>Username : {profile.username}</p>
                     <p>Role : {profile.roles.join(", ")}</p>
-                    <p>Message : {profile.message}</p>
+                    <div className = "message">Message : {profile.message}</div>
                 </div>
             )}
             

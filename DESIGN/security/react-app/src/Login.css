@@ -1,0 +1,103 @@
+/* General Styling */
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(135deg, #121212, #1e1e1e); /* Spotify-like dark background */
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+  
+  /* Container with Glassmorphism effect */
+  .login-container {
+    background: rgba(40, 40, 40, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    width: 100%;
+    max-width: 360px;
+  }
+  
+  /* Form Styling */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  
+  label {
+    font-weight: 500;
+    text-align: left;
+    color: #b3b3b3;
+  }
+  
+  input[type="text"],
+  input[type="password"] {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #282828;
+    color: #fff;
+    font-size: 14px;
+  }
+  
+  input[type="text"]::placeholder,
+  input[type="password"]::placeholder {
+    color: #888;
+  }
+  
+  button[type="submit"] {
+    background-color: #1db954; /* Spotify green */
+    color: #ffffff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #1ed760;
+  }
+  
+  /* Profile Styling */
+  .profile-container {
+    background: rgba(40, 40, 40, 0.75);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+    text-align: center;
+  }
+  
+  .profile-container h3 {
+    color: #ffffff;
+    font-size: 22px;
+  }
+  
+  .profile-container p {
+    color: #aaaaaa;
+    font-size: 14px;
+  }
+  
+  /* Message Styling */
+  .message {
+    margin-top: 12px;
+    font-weight: bold;
+    color: #f54254; /* red or change dynamically */
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 500px) {
+    .login-container {
+      width: 90%;
+      padding: 30px;
+    }
+  }
+  
