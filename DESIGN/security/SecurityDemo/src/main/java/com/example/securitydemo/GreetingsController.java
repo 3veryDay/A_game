@@ -40,7 +40,8 @@ public class GreetingsController {
 
 
 
-    private final AuthenticationManager authenticationManager;
+
+    private  AuthenticationManager authenticationManager;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -59,12 +60,6 @@ public class GreetingsController {
     public static String main(String[] args) {
         return "Hello, World!";
     }
-
-    //이거 됨
-    @GetMapping("/api/hi")
-    public static String hi() {return "Hi, World!";}
-
-    //여기를 통해서 signup하면 role = user로 설정됨
 
 
     //check user credentials before acting on method

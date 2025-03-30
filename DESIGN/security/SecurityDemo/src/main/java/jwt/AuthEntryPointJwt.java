@@ -25,6 +25,7 @@ public class AuthEntryPointJwt  implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, org.springframework.security.core.AuthenticationException authException)
     throws IOException, ServletException {
+        logger.error("Unauthorized error: {}", authException.getClass().getName());
         logger.error("Unauthorized error: {}", authException.getMessage());
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
