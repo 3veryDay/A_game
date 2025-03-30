@@ -19,5 +19,6 @@ public class IntervalSegmentRequestDTO {
     private SegmentType type;
     private BigDecimal targetSpeed;
     private MusicSelectionType musicSelectionType;
+    private String music_info;
     private String musicSourceId;
 }

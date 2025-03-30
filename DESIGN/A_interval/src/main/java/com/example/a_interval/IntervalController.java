@@ -37,7 +37,8 @@ public class IntervalController {
                                     segment.getType(),
                                     segment.getTargetSpeed(),
                                     segment.getMusicSelectionType(),
-                                    segment.getMusicSourceId()
+                                    segment.getMusicSourceId(),
+                                    segment.getMusic_info()
                             ))
                             .collect(Collectors.toList());
 

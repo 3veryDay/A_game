@@ -36,6 +36,7 @@ public class IntervalSegment {
 
     @Enumerated(EnumType.STRING)
     private MusicSelectionType musicSelectionType;
+    private String music_info;
 
     private String musicSourceId;
 
