@@ -1,0 +1,86 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px;
+  min-height: 100vh;
+  background-color: #121212;
+  color: white;
+}
+
+.card {
+  background-color: #1e1e1e;
+  padding: 32px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #ccc;
+}
+
+.segment {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #181818;
+}
+
+.segmentText {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.musicText {
+  font-size: 14px;
+  color: #aaa;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  gap: 12px;
+}
+
+.button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.green {
+  background-color: #1db954;
+  color: white;
+}
+
+.green:hover {
+  background-color: #17a64a;
+}
+
+.gray {
+  background-color: #333;
+  color: white;
+}
+
+.gray:hover {
+  background-color: #444;
+}

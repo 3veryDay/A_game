@@ -1,0 +1,227 @@
+.container {
+    min-height: 100vh;
+    background-color: #121212;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  
+  .card {
+    background-color: #1f1f1f;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .segment {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: #1d1c1cb7;
+    border-radius: 12px;
+      /* 🎯 살짝 테두리 */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  /* 🎯 아주 은은한 그림자 */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 600px;  /* 🧱 최대폭 제한 */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  
+  .segmentTitle {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #a3a3a3;
+    align-self: center;
+  }
+  .compactInput {
+    width: 150px;             /* 🎯 숫자 2~3개 + 살짝 여유 */
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: #3a3a3a;
+    color: white;
+    box-sizing: border-box;
+    align-self: center;
+  }
+  
+
+  .input, .select {
+    width: 100%;               /* 부모(.segment)에 맞춤 */
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background-color: #3a3a3a;
+    color: white;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  
+  .selectButton {
+    padding: 8px 16px;
+    width : 150px;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    align-self: center;
+
+  }
+  .segmentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .segmentButtons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .addButton,
+  .deleteButton {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.2s;
+  }
+  
+  .addButton:hover,
+  .deleteButton:hover {
+    color: #1db954; /* Spotify green */
+  }
+  
+  
+  .input::placeholder {
+    color: #a3a3a3;
+  }
+  
+  .input:focus,
+  .select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #1db954;
+  }
+  
+  .button {
+    background-color: #1db954;
+    color: black;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    font-size: 1rem;
+  }
+  
+  .button:hover {
+    background-color: #1ed760;
+  }
+
+  .addButtonWrapper {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+  }
+  
+  .addButton {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.2s;
+  }
+  
+  .addButton:hover {
+    color: #1db954;
+  }
+  .segmentTopBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .deleteButton {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s;
+  }
+  
+  .deleteButton:hover {
+    color: #bd1414; /* Spotify 느낌 나는 hover 색상 */
+  }
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .modal {
+    background: #121212;
+    padding: 24px;
+    border-radius: 12px;
+    color: white;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  .timeInputRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .timeInput {
+    width: 60px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #1e1e1e;
+    color: white;
+    text-align: center;
+  }
+  
+  .modalButtons {
+    display: flex;
+    justify-content: space-around;
+  }
+  
