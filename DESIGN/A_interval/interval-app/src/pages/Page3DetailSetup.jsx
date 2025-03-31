@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import MusicTypeSelector from '../components/MusicTypeSelector'; // 경로는 네 구조에 따라 조정!
 import { useInterval } from '../context/IntervalContext';
 import styles from './Page3.module.css';
 
@@ -125,44 +126,15 @@ const Page3DetailSetup = () => {
               <option value="SPRINT">Sprint</option>
             </select>
 
-            <select
-              className={styles.compactInput}
-              value={input.musicType}
-              onChange={(e) => handleChange(idx, 'musicType', e.target.value)}
-            >
-              <option value="NONE">None</option>
-              <option value="GENRE">Genre</option>
-              <option value="RANDOM">Random</option>
-              <option value="MOOD">Mood</option>
-              <option value="BPM">BPM</option>
-              <option value="PLAYLIST">Playlist</option>
-              <option value="FAVORITES">Favorites</option>
-              <option value="ARTIST">Artist</option>
-              <option value="ALBUM">Album</option>
-              <option value="SONG">Song</option>
-              <option value="RECENT">Recent</option>
-              <option value="TOPHITS">Top Hits</option>
-              <option value="NEWRELEASES">New Releases</option>
-            </select>
-
-            {['GENRE', 'MOOD', 'BPM', 'ARTIST', 'ALBUM', 'SONG'].includes(input.musicType ?? '') && (
-              <input
-                className={styles.compactInput}
-                type="text"
-                placeholder="세부 정보 입력"
-                value={input.musicDetail}
-                onChange={(e) => handleChange(idx, 'musicDetail', e.target.value)}
-              />
-            )}
-
-            {['PLAYLIST', 'FAVORITES'].includes(input.musicType ?? '') && (
-              <button
-                className={styles.selectButton}
-                onClick={() => alert('추후 연결 예정')}
-              >
-                Select
-              </button>
-            )}
+            <MusicTypeSelector
+  selectedType={input.musicType}
+  musicDetail={input.musicDetail}
+  onChange={({ musicType, musicDetail }) => {
+    handleChange(idx, 'musicType', musicType);
+    handleChange(idx, 'musicDetail', musicDetail);
+  }}
+/>
+            
           </div>
         ))}
 
