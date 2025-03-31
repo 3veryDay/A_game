@@ -1,5 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { IntervalProvider } from './context/IntervalContext';
+import DashboardPage from './Login page/DashboardPage';
+import LoginPage from './Login page/Login_spotify';
 import Page0Start from './pages/Page0Start';
 import Page1 from './pages/Page1';
 import Page2PatternSetup from './pages/Page2PatternSetup';
@@ -12,7 +14,10 @@ function App() {
     <IntervalProvider>
       <Router>
         <Routes>
+    
           <Route path="/" element={<Page0Start />} />
+          <Route path= "/spotify_login" element = {<LoginPage/>} />
+          <Route path="/dashboard" element = {<DashboardPage/>}/>
           <Route path="/setup-count" element={<Page1 />} /> {/* ✅ 추가됨 */}
           <Route path="/setup-pattern" element={<Page2PatternSetup />} />
           <Route path="/setup-details" element={<Page3DetailSetup />} />
