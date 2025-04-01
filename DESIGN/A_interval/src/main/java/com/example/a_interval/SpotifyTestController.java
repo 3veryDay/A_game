@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyApiThreading;
@@ -41,6 +42,7 @@ GET /spotify/callback?code=xxxx
  */
 //https://github.com/spotify-web-api-java/spotify-web-api-java
 @RestController
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequestMapping("/spotify")
 @RequiredArgsConstructor
 public class SpotifyTestController {
@@ -66,7 +68,7 @@ public class SpotifyTestController {
                 .build();
 
         AuthorizationCodeUriRequest authorizationCodeUriRequest = apiForLogin.authorizationCodeUri()
-                .scope("user-read-private user-read-email")
+                .scope("user-read-private user-read-email user-read-playback-state user-read-recently-played user-modify-playback-state")
                 .show_dialog(true)
                 .build();
         URI uri = authorizationCodeUriRequest.execute();
@@ -86,25 +88,60 @@ public class SpotifyTestController {
                 .setRedirectUri(URI.create(redirectUri))
                 .build();
         try {
+            System.out.println("🟡 콜백 진입");
+
             AuthorizationCodeRequest authorizationCodeRequest = apiForCallback.authorizationCode(code).build();
             AuthorizationCodeCredentials credentials = authorizationCodeRequest.execute();
 
-            // 액세스 토큰 세팅
-            session.setAttribute("accessToken", credentials.getAccessToken());
+
+            System.out.println("🟢 accessToken 발급 완료: " + credentials.getAccessToken());
+            System.out.println("🔍 Granted scopes: " + credentials.getScope());
+
+            String accessToken = credentials.getAccessToken();
+            session.setAttribute("accessToken", accessToken);
+
+            System.out.println("🟢 accessToken 발급 완료: " + accessToken);
+
+            // 테스트용 API 호출
+            SpotifyApi testApi = new SpotifyApi.Builder()
+                    .setAccessToken(accessToken)
+                    .build();
+
+            final User user = testApi.getCurrentUsersProfile().build().execute();
+            System.out.println("✅ 유저: " + user.getDisplayName());
 
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .location(URI.create("http://localhost:3000/dashboard"))
+                    .header("Location", "http://localhost:3000/dashboard")
                     .build();
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+            System.out.println("❌ 예외 발생!");
+            e.printStackTrace(); // 콘솔 출력
+
+            // 에러를 클라이언트에게 그대로 전달 (확실히 보기 위해!)
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body("서버 에러 발생: " + e.getClass().getSimpleName() + "\n" + e.getMessage());
         }
+    }
+
+    @GetMapping("/token")
+    public ResponseEntity<?> getToken(HttpSession session) {
+        String accessToken = (String) session.getAttribute("accessToken");
+        if (accessToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "no Access Token"));
+        }
+
+        return ResponseEntity.ok(Map.of("accessToken", accessToken));
     }
 
     // 3. 사용자 정보 가져오기
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUserProfile(HttpSession session) {
         String accessToken = (String) session.getAttribute("accessToken");
-        System.out.println("accessToken: " + accessToken);
+        System.out.println("//me : accessToken: " + accessToken);
         if (accessToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "no Access Token"));
@@ -117,7 +154,7 @@ public class SpotifyTestController {
         try {
             final GetCurrentUsersProfileRequest getCurrentUsersProfileRequest = api.getCurrentUsersProfile().build();
             final User user = getCurrentUsersProfileRequest.execute();
-
+            System.out.println("Display name: " + user.getDisplayName());
             Map<String, Object> userInfo = Map.of(
                     "id", user.getId(),
                     "display_name", user.getDisplayName(),
@@ -132,6 +169,13 @@ public class SpotifyTestController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        session.invalidate();
+        System.out.println("✅ 세션 로그아웃 완료");
+        return ResponseEntity.ok().build();
     }
 
 }
