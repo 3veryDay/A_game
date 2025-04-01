@@ -1,98 +1,161 @@
+// ✅ DashboardPage.jsx (프리미엄 조건 분기 수정 완료)
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import React, { useEffect, useState } from 'react';
+const DashboardPage = () => {
+  console.log("✅ DashboardPage 컴포넌트 렌더링됨");
+  const [userInfo, setUserInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPremiumError, setIsPremiumError] = useState(false);
+  const navigate = useNavigate();
 
-const MusicPlayerPage = () => {
-  const [token, setToken] = useState(null);
-  const [deviceId, setDeviceId] = useState(null);
-  const [user, setUser] =useState(null);
-  const [isPremium, setIsPremium] = useState(false);
-
-
-
-  // 1. access_token 받아오기
   useEffect(() => {
-    fetch("http://localhost:8080/spotify/token", { credentials: "include" })
-      .then(res => res.json())
-      .then(data => setToken(data.access_token));
-  }, []);
-  //2. 사용자 정보 가져오기(token이 생기면 실행)
-  useEffect(() => {
-    if(!token) return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("code")) {
+      window.history.replaceState({}, "", "/dashboard");
+    }
 
-    fetch("https://api.spotify.com/v1/me", {
-      credentials:'include',
-      headers :{
-        Authorization : `Bearer ${token}`,
-      },
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log("👤 사용자 정보:", data);
-        setUser(data);
-        setIsPremium(data.product === "premium");
-      });
-  }, [token]);
+    const fetchUserInfo = async () => {
+      try {
+        const tokenRes = await fetch("http://localhost:8080/spotify/token", {
+          method: "GET",
+          credentials: "include",
+        });
+        const tokenData = await tokenRes.json();
 
-  // 3. SDK 초기화(premium 계정인 경우에만)
-  useEffect(() => {
-    if (!token || !isPremium) return;
+        if (!tokenRes.ok || !tokenData.accessToken) {
+          throw new Error("No access token found.");
+        }
 
-    const script = document.createElement("script");
-    script.src = "https://sdk.scdn.co/spotify-player.js";
-    script.async = true;
-    document.body.appendChild(script);
+        const res = await fetch("http://localhost:8080/spotify/me", {
+          method: "GET",
+          credentials: "include",
+        });
 
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      const player = new window.Spotify.Player({
-        name: 'React Interval Player',
-        getOAuthToken: cb => cb(token),
-        volume: 0.5,
-      });
+        const data = await res.json();
 
-      player.addListener('ready', ({ device_id }) => {
-        console.log('Device ready:', device_id);
-        setDeviceId(device_id);
-      });
+        if (!res.ok) {
+          if (res.status === 403) {
+            setIsPremiumError(true);
+          } else {
+            throw new Error(data.error || "Unknown error");
+          }
+          return;
+        }
 
-      player.connect();
+        setUserInfo(data);
+      } catch (err) {
+        console.error("사용자 정보 가져오기 실패:", err.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
-  }, [token, isPremium]);
 
-  // 4. 음악 재생
-  const playTrack = () => {
-    if (!deviceId || !token) return;
+    fetchUserInfo();
+  }, []);
 
-    fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
-      method: "PUT",
-      credentials : "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        uris: ["spotify:track:3n3Ppam7vgaVa1iaRUc9Lp"],
-      }),
-    });
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:8080/spotify/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      navigate("/spotify_login");
+    } catch (err) {
+      console.error("로그아웃 실패:", err);
+    }
   };
 
+  const goToMusicPlayer = () => {
+    navigate("/play");
+  };
+
+  const premiumSignupUrl = "https://www.spotify.com/premium/";
+
+
+  console.log("렌더링 시 상태:", { userInfo, isPremiumError, isLoading });
   return (
-    <div>
-      <h1>🎵 음악 재생 테스트</h1>
+    <div style={styles.container}>
+      <h1 style={styles.title}>🎶 대시보드</h1>
 
-      {!user && <p>로그인 정보를 불러오는 중...</p>}
-
-      {user && !isPremium && (
-        <p style={{ color: 'red' }}>🚫 Premium 계정이 아닙니다. 음악을 틀 수 없습니다!</p>
+      {isLoading ? (
+        <p>불러오는 중...</p>
+      ) : userInfo && (isPremiumError == false) ? (
+        <div style={styles.info}>
+          
+          <p><strong>Display Name:</strong> {userInfo.display_name}</p>
+          <p><strong>User ID:</strong> {userInfo.id}</p>
+          <p><strong>Email:</strong> {userInfo.email}</p>
+          <button onClick={goToMusicPlayer} style={styles.musicButton}>🎵 음악 듣기</button>
+        </div>
+      ) : isPremiumError ? (
+        <div style={styles.errorBox}>
+          <p>⚠️ 이 기능을 사용하려면 Spotify Premium 계정이 필요합니다.</p>
+          <a href={premiumSignupUrl} target="_blank" rel="noopener noreferrer" style={styles.link}>
+            여기서 가입하기 →
+          </a>
+        </div>
+      ) : (
+        <p>유저 정보를 불러올 수 없습니다.</p>
       )}
 
-      {user && isPremium && (
-        <>
-          <p>👋 {user.display_name}님, 환영합니다!</p>
-          <button onClick={playTrack}>음악 재생</button>
-        </>
-      )}
+      <button onClick={handleLogout} style={styles.logoutButton}>로그아웃</button>
     </div>
   );
 };
 
-export default MusicPlayerPage;
+const styles = {
+  container: {
+    height: "100vh",
+    backgroundColor: "#121212",
+    color: "#fff",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    fontFamily: "Helvetica Neue, sans-serif",
+  },
+  title: {
+    fontSize: "2rem",
+    marginBottom: "20px",
+  },
+  info: {
+    backgroundColor: "#1db954",
+    padding: "20px",
+    borderRadius: "15px",
+    marginBottom: "20px",
+    textAlign: "center",
+  },
+  errorBox: {
+    backgroundColor: "#ff4d4f",
+    padding: "20px",
+    borderRadius: "15px",
+    marginBottom: "20px",
+    textAlign: "center",
+  },
+  link: {
+    color: "#fff",
+    textDecoration: "underline",
+    marginTop: "10px",
+    display: "inline-block",
+  },
+  logoutButton: {
+    padding: "10px 20px",
+    backgroundColor: "#333",
+    color: "white",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+  },
+  musicButton: {
+    padding: "10px 20px",
+    backgroundColor: "#0f0",
+    color: "#000",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+    marginTop: "10px",
+  },
+};
+
+export default DashboardPage;
