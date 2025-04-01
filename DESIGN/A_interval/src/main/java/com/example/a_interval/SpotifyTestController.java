@@ -18,10 +18,12 @@ import se.michaelthelin.spotify.requests.authorization.authorization_code.Author
 import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Map;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequestMapping("/spotify")
 @RequiredArgsConstructor
 public class SpotifyTestController {
@@ -134,6 +136,34 @@ public class SpotifyTestController {
                     .body(Map.of("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getSpotifyProfile(HttpSession session) {
+        String accessToken = (String) session.getAttribute("accessToken");
+        if (accessToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "no Access Token"));
+        }
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.spotify.com/v1/me"))
+                    .header("Authorization", "Bearer " + accessToken)
+                    .build();
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return ResponseEntity.status(response.statusCode())
+                    .body(response.body());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {

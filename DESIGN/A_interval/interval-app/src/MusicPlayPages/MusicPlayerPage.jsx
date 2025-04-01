@@ -12,25 +12,25 @@ const MusicPlayerPage = () => {
   useEffect(() => {
     fetch("http://localhost:8080/spotify/token", { credentials: "include" })
       .then(res => res.json())
-      .then(data => setToken(data.access_token));
+      .then(data => {
+        console.log("받은 token : ",data );
+        setToken(data.accessToken)});
   }, []);
-  //2. 사용자 정보 가져오기(token이 생기면 실행)
   useEffect(() => {
-    if(!token) return;
-
-    fetch("https://api.spotify.com/v1/me", {
-      credentials:'include',
-      headers :{
-        Authorization : `Bearer ${token}`,
-      },
+    fetch("http://localhost:8080/spotify/profile", {
+      credentials: "include",
     })
-    .then(res => res.json())
-    .then(data => {
-      console.log("👤 사용자 정보:", data);
+      .then(res => res.json())
+      .then(data => {
+        console.log("👤 사용자 정보 (백엔드 프록시 경유):", data);
         setUser(data);
         setIsPremium(data.product === "premium");
+      })
+      .catch(err => {
+        console.error("😵 사용자 정보 불러오기 실패:", err);
       });
-  }, [token]);
+  }, []);
+  
 
   // 3. SDK 초기화(premium 계정인 경우에만)
   useEffect(() => {
