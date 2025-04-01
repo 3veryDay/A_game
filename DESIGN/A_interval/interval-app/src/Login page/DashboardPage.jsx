@@ -1,15 +1,15 @@
-// ✅ DashboardPage.jsx
+// ✅ DashboardPage.jsx (프리미엄 조건 분기 수정 완료)
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DashboardPage = () => {
+  console.log("✅ DashboardPage 컴포넌트 렌더링됨");
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPremiumError, setIsPremiumError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 🔥 URL에서 ?code=... 제거
     const url = new URL(window.location.href);
     if (url.searchParams.get("code")) {
       window.history.replaceState({}, "", "/dashboard");
@@ -66,26 +66,34 @@ const DashboardPage = () => {
     }
   };
 
+  const goToMusicPlayer = () => {
+    navigate("/play");
+  };
+
   const premiumSignupUrl = "https://www.spotify.com/premium/";
 
+
+  console.log("렌더링 시 상태:", { userInfo, isPremiumError, isLoading });
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>🎶 대시보드</h1>
 
       {isLoading ? (
         <p>불러오는 중...</p>
+      ) : userInfo && (isPremiumError == false) ? (
+        <div style={styles.info}>
+          
+          <p><strong>Display Name:</strong> {userInfo.display_name}</p>
+          <p><strong>User ID:</strong> {userInfo.id}</p>
+          <p><strong>Email:</strong> {userInfo.email}</p>
+          <button onClick={goToMusicPlayer} style={styles.musicButton}>🎵 음악 듣기</button>
+        </div>
       ) : isPremiumError ? (
         <div style={styles.errorBox}>
           <p>⚠️ 이 기능을 사용하려면 Spotify Premium 계정이 필요합니다.</p>
           <a href={premiumSignupUrl} target="_blank" rel="noopener noreferrer" style={styles.link}>
             여기서 가입하기 →
           </a>
-        </div>
-      ) : userInfo ? (
-        <div style={styles.info}>
-          <p><strong>Display Name:</strong> {userInfo.display_name}</p>
-          <p><strong>User ID:</strong> {userInfo.id}</p>
-          <p><strong>Email:</strong> {userInfo.email}</p>
         </div>
       ) : (
         <p>유저 정보를 불러올 수 없습니다.</p>
@@ -116,6 +124,7 @@ const styles = {
     padding: "20px",
     borderRadius: "15px",
     marginBottom: "20px",
+    textAlign: "center",
   },
   errorBox: {
     backgroundColor: "#ff4d4f",
@@ -137,6 +146,15 @@ const styles = {
     border: "none",
     borderRadius: "10px",
     cursor: "pointer",
+  },
+  musicButton: {
+    padding: "10px 20px",
+    backgroundColor: "white",
+    color: "#000",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+    marginTop: "10px",
   },
 };
 
