@@ -10,6 +10,8 @@ import DashboardPage from './Login page/DashboardPage';
 import LoginPage from './Login page/Login_spotify';
 
 import MusicPlayerPage from './MusicPlayPages/MusicPlayerPage';
+
+import MusicLabPage from './MusicPlayPages/MusicLabPage';
 function App() {
   return (
     <IntervalProvider>
@@ -27,6 +29,8 @@ function App() {
 
 
           <Route path="/play" element = {<MusicPlayerPage />} />
+
+          <Route path="/music-lab" element={<MusicLabPage />} />
         </Routes>
       </Router>
     </IntervalProvider>

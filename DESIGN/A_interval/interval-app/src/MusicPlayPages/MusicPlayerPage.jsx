@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import './MusicPlayerPage.css';
+
+
 const MusicPlayerPage = () => {
   const [token, setToken] = useState(null);
   const [deviceId, setDeviceId] = useState(null);
@@ -11,6 +14,7 @@ const MusicPlayerPage = () => {
   const [keyword, setKeyword] = useState("");
   const [results, setResults] = useState([]);
 
+  const navigate = useNavigate();
 
 
   
@@ -224,9 +228,13 @@ const fetchGlobalChart = () => {
         </button>
         <button className="music-button" onClick={fetchTopTracks}>  내 인기 곡</button>
         <button className="music-button" onClick={findPopularTracks}>인기음원</button>
-        <button className="music-button" onClick={fetchGlobalChart}>
-  글로벌 차트
-</button>
+        <button className="music-button" onClick={fetchGlobalChart}>글로벌 차트</button>
+
+        <button className='music-button' 
+        onClick = {() => {
+          navigate("/music-lab", {state : { token, deviceId}});
+        }}
+        >🎛️ Music Lab으로 이동</button>
       </div>
 
       <div className="music-input-group">

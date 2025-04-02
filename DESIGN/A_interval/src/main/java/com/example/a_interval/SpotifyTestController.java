@@ -46,7 +46,7 @@ public class SpotifyTestController {
                 .build();
 
         AuthorizationCodeUriRequest authorizationCodeUriRequest = apiForLogin.authorizationCodeUri()
-                .scope("user-read-private user-read-email user-read-playback-state user-read-recently-played user-modify-playback-state")
+                .scope("user-read-private user-read-email streaming user-read-playback-state user-read-recently-played user-modify-playback-state user-read-currently-playing")
                 .show_dialog(true)
                 .build();
 
@@ -94,6 +94,11 @@ public class SpotifyTestController {
     @GetMapping("/token")
     public ResponseEntity<?> getToken(HttpSession session) {
         String accessToken = (String) session.getAttribute("accessToken");
+        /*
+        여기서 더해야 하는건지...?
+         */
+
+        //String refreshToken = (String) session.getAttribute("refreshToken");
         if (accessToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "no Access Token"));
