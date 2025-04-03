@@ -44,9 +44,16 @@ public class SpotifyTestController {
                 .setClientSecret(clientSecret)
                 .setRedirectUri(URI.create(redirectUri))
                 .build();
+        //playlist-read-private
+        //playlist-read-collaborative
+        //user-modify-playback-state
+        //user-read-playback-state
+        //streaming
 
         AuthorizationCodeUriRequest authorizationCodeUriRequest = apiForLogin.authorizationCodeUri()
-                .scope("user-read-private user-read-email streaming user-read-playback-state user-read-recently-played user-modify-playback-state user-read-currently-playing")
+                .scope("user-read-private user-read-email streaming user-read-playback-state " +
+                        "user-read-recently-played user-modify-playback-state user-read-currently-playing " +
+                        "playlist-read-private playlist-read-collaborative streaming")
                 .show_dialog(true)
                 .build();
 
