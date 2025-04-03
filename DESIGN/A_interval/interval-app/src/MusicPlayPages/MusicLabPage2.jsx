@@ -1,32 +1,55 @@
 // ✅ MusicLabPage2 - 두 개의 플레이리스트를 설정 시간대로 자동 전환하는 페이지
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import PlaylistSelector from "../components/PlaylistSelector";
 
 const MusicLabPage2 = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const token = location.state?.token || window.spotifyToken;
+  const token = location.state?.token;
   const deviceId = location.state?.deviceId || window.spotifyDeviceId;
 
   const [playlist1, setPlaylist1] = useState(null);
   const [playlist2, setPlaylist2] = useState(null);
+  const [playlistName1, setPlaylistName1] = useState('');
+  const [playlistName2, setPlaylistName2] = useState('');
   const [time1, setTime1] = useState(30); // seconds
   const [time2, setTime2] = useState(30);
   const [isRunning, setIsRunning] = useState(false);
   const [playingIndex, setPlayingIndex] = useState(0); // 0 or 1
+  const [currentNames, setCurrentNames] = useState({ 0: '', 1: '' });
   const timeoutRef = useRef(null);
 
-  useEffect(() => {
-    if (token && deviceId) {
-      console.log("📦 전역 변수에 저장된 token 및 deviceId:", token, deviceId);
-      window.spotifyToken = token;
-      window.spotifyDeviceId = deviceId;
+  // ✅ 마지막 재생 위치 저장용 객체 (메모리 내)
+  const positionStore = useRef({});
+
+  const saveCurrentPosition = async () => {
+    try {
+      const res = await fetch(`https://api.spotify.com/v1/me/player`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.status === 204) {
+        console.warn("⚠️ 현재 재생 상태 없음 (204)");
+        return;
+      }
+
+      const data = await res.json();
+      const contextUri = data.context?.uri;
+      const position = data.progress_ms;
+
+      if (contextUri && position != null) {
+        positionStore.current[contextUri] = position;
+        console.log("💾 저장 완료:", contextUri, `${position}ms`);
+      }
+    } catch (err) {
+      console.error("현재 재생 위치 저장 실패:", err);
     }
-  }, [token, deviceId]);
+  };
 
   const playPlaylist = async (playlistUri) => {
-    if (!token || !deviceId) return;
+    const resumePosition = positionStore.current[playlistUri] || 0;
+    console.log("▶️ 재생 요청:", playlistUri, "resume at", resumePosition);
+
     try {
       await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: "PUT",
@@ -37,24 +60,26 @@ const MusicLabPage2 = () => {
         body: JSON.stringify({
           context_uri: playlistUri,
           offset: { position: 0 },
-          position_ms: 0,
+          position_ms: resumePosition,
         }),
       });
-      console.log("▶️ 재생됨:", playlistUri);
+      console.log("✅ 재생됨:", playlistUri, `(${resumePosition}ms)`);
     } catch (err) {
       console.error("재생 실패:", err);
     }
   };
 
-  const playLoop = (index) => {
+  const playLoop = async (index) => {
     const uri = index === 0 ? playlist1 : playlist2;
     const duration = index === 0 ? time1 : time2;
 
     if (!uri) return;
-    playPlaylist(uri);
+
+    await playPlaylist(uri);
     setPlayingIndex(index);
 
-    timeoutRef.current = setTimeout(() => {
+    timeoutRef.current = setTimeout(async () => {
+      await saveCurrentPosition();
       playLoop(index === 0 ? 1 : 0);
     }, duration * 1000);
   };
@@ -73,6 +98,28 @@ const MusicLabPage2 = () => {
     setIsRunning(false);
   };
 
+  const getPlaylistName = async (playlistUri, index) => {
+    const id = playlistUri.split(':').pop();
+    try {
+      const res = await fetch(`https://api.spotify.com/v1/playlists/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (index === 0) setPlaylistName1(data.name);
+      else setPlaylistName2(data.name);
+    } catch (err) {
+      console.error("플레이리스트 이름 가져오기 실패:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (playlist1) getPlaylistName(playlist1, 0);
+  }, [playlist1]);
+
+  useEffect(() => {
+    if (playlist2) getPlaylistName(playlist2, 1);
+  }, [playlist2]);
+
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">🎛️ Music Lab - 자동 전환 모드</h1>
@@ -86,8 +133,11 @@ const MusicLabPage2 = () => {
           onChange={(e) => setTime1(Number(e.target.value))}
           className="border px-2 py-1 rounded w-24"
         /> 초
-        <PlaylistSelector token={token} onSelect={(uri) => setPlaylist1(uri)} />
-        {playlist1 && <p className="text-sm text-gray-700 mt-1">선택된 Playlist 1: {playlist1}</p>}
+        <PlaylistSelector token={token} onSelect={(uri) => {
+          setPlaylist1(uri);
+          setCurrentNames((prev) => ({ ...prev, 0: uri.split(':').pop() }));
+        }} />
+        {playlistName1 && <p className="text-sm text-gray-600">선택됨: {playlistName1}</p>}
       </div>
 
       <div className="space-y-2">
@@ -99,8 +149,11 @@ const MusicLabPage2 = () => {
           onChange={(e) => setTime2(Number(e.target.value))}
           className="border px-2 py-1 rounded w-24"
         /> 초
-        <PlaylistSelector token={token} onSelect={(uri) => setPlaylist2(uri)} />
-        {playlist2 && <p className="text-sm text-gray-700 mt-1">선택된 Playlist 2: {playlist2}</p>}
+        <PlaylistSelector token={token} onSelect={(uri) => {
+          setPlaylist2(uri);
+          setCurrentNames((prev) => ({ ...prev, 1: uri.split(':').pop() }));
+        }} />
+        {playlistName2 && <p className="text-sm text-gray-600">선택됨: {playlistName2}</p>}
       </div>
 
       <div className="space-x-4">
@@ -123,7 +176,8 @@ const MusicLabPage2 = () => {
 
       {isRunning && (
         <p className="text-sm text-gray-600">
-          🔁 현재 재생 중: Playlist {playingIndex + 1} ({playingIndex === 0 ? time1 : time2}초)
+          🔁 현재 재생 중: Playlist {playingIndex + 1} ({playingIndex === 0 ? time1 : time2}초) <br />
+          🏷️ URI: {currentNames[playingIndex]}
         </p>
       )}
     </div>
