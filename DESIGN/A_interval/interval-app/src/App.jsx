@@ -19,8 +19,8 @@ function App() {
       <Router>
         <Routes>
     
-          <Route path="/" element={<Page0Start />} />
-          <Route path= "/spotify_login" element = {<LoginPage />} />
+          <Route path="/page0" element={<Page0Start />} />
+          <Route path= "/" element = {<LoginPage />} />
           <Route path="/dashboard" element = {<DashboardPage/>}/>
           <Route path="/setup-count" element={<Page1 />} />
           <Route path="/setup-pattern" element={<Page2PatternSetup />} />

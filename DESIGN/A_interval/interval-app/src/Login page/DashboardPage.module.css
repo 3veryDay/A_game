@@ -1,0 +1,61 @@
+/* DashboardPage.module.css */
+
+.container {
+    height: 100vh;
+    background-color: #121212;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: "Helvetica Neue", sans-serif;
+  }
+  
+  .title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .info {
+    background-color: #1db954;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .errorBox {
+    background-color: #ff4d4f;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .link {
+    color: #fff;
+    text-decoration: underline;
+    margin-top: 10px;
+    display: inline-block;
+  }
+  
+  .logoutButton {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .musicButton {
+    padding: 10px 20px;
+    background-color: white;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+  
