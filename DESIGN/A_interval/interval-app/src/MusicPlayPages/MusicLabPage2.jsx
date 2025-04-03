@@ -87,6 +87,7 @@ const MusicLabPage2 = () => {
           className="border px-2 py-1 rounded w-24"
         /> 초
         <PlaylistSelector token={token} onSelect={(uri) => setPlaylist1(uri)} />
+        {playlist1 && <p className="text-sm text-gray-700 mt-1">선택된 Playlist 1: {playlist1}</p>}
       </div>
 
       <div className="space-y-2">
@@ -99,6 +100,7 @@ const MusicLabPage2 = () => {
           className="border px-2 py-1 rounded w-24"
         /> 초
         <PlaylistSelector token={token} onSelect={(uri) => setPlaylist2(uri)} />
+        {playlist2 && <p className="text-sm text-gray-700 mt-1">선택된 Playlist 2: {playlist2}</p>}
       </div>
 
       <div className="space-x-4">
