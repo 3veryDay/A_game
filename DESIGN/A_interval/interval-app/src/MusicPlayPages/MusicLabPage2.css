@@ -154,4 +154,32 @@
     margin-top: 0.5rem;
     text-align: center;
   }
+  .playlist-shuffle-toggle {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+  
+  .playlist-shuffle-toggle input[type="checkbox"] {
+    accent-color: #1db954;
+    width: 16px;
+    height: 16px;
+  }
+  .playlist-shuffle-toggle {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+  
+  .playlist-shuffle-toggle input[type="checkbox"] {
+    accent-color: #1db954;
+    width: 16px;
+    height: 16px;
+  }
   

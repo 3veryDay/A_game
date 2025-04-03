@@ -16,6 +16,10 @@ const MusicLabPage2 = () => {
   const [image2, setImage2] = useState("");
   const [time1, setTime1] = useState(30);
   const [time2, setTime2] = useState(30);
+  const [shuffle1, setShuffle1] = useState(false);
+  const [shuffle2, setShuffle2] = useState(false);
+  const [shufflePlayed1, setShufflePlayed1] = useState(false);
+  const [shufflePlayed2, setShufflePlayed2] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [playingIndex, setPlayingIndex] = useState(0);
   const timeoutRef = useRef(null);
@@ -42,12 +46,23 @@ const MusicLabPage2 = () => {
     }
   };
 
-  const playPlaylist = async (playlistUri) => {
-    const resumeData = positionStore.current[playlistUri];
-    const offsetUri = resumeData?.trackUri || null;
-    const resumeMs = resumeData?.position || 0;
-
+  const playPlaylist = async (playlistUri, shouldShuffle, hasShuffled, markShuffled) => {
     try {
+      if (shouldShuffle && !hasShuffled) {
+        await fetch(
+          `https://api.spotify.com/v1/me/player/shuffle?state=true&device_id=${deviceId}`,
+          {
+            method: "PUT",
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        markShuffled(true);
+      }
+
+      const resumeData = positionStore.current[playlistUri];
+      const offsetUri = resumeData?.trackUri || null;
+      const resumeMs = resumeData?.position || 0;
+
       const body = {
         context_uri: playlistUri,
         position_ms: resumeMs,
@@ -56,14 +71,17 @@ const MusicLabPage2 = () => {
         body.offset = { uri: offsetUri };
       }
 
-      await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+      await fetch(
+        `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
     } catch (err) {
       console.error("재생 실패:", err);
     }
@@ -72,10 +90,13 @@ const MusicLabPage2 = () => {
   const playLoop = async (index) => {
     const uri = index === 0 ? playlist1 : playlist2;
     const duration = index === 0 ? time1 : time2;
+    const shuffle = index === 0 ? shuffle1 : shuffle2;
+    const shuffled = index === 0 ? shufflePlayed1 : shufflePlayed2;
+    const setShuffled = index === 0 ? setShufflePlayed1 : setShufflePlayed2;
 
     if (!uri) return;
 
-    await playPlaylist(uri);
+    await playPlaylist(uri, shuffle, shuffled, setShuffled);
     setPlayingIndex(index);
 
     timeoutRef.current = setTimeout(async () => {
@@ -89,6 +110,8 @@ const MusicLabPage2 = () => {
       alert("두 플레이리스트와 시간을 모두 입력해주세요");
       return;
     }
+    setShufflePlayed1(false);
+    setShufflePlayed2(false);
     setIsRunning(true);
     playLoop(0);
   };
@@ -105,9 +128,14 @@ const MusicLabPage2 = () => {
       <div className="music-lab-playlists-row">
         {/* Playlist 1 */}
         <div className="music-lab-block">
-        <h3 className="playlist-block-title">🎵 Playlist 1</h3>
-
-          {image1 && <img src={image1} alt="playlist1 cover" className="playlist-cover" />}
+          <h3 className="playlist-block-title">🎵 Playlist 1</h3>
+          {image1 && (
+            <img
+              src={image1}
+              alt="playlist1 cover"
+              className="playlist-cover"
+            />
+          )}
 
           <div className="playlist-time-input">
             <label htmlFor="time1">재생 시간</label>
@@ -121,7 +149,19 @@ const MusicLabPage2 = () => {
             <span>초</span>
           </div>
 
-          {name1 && <p className="playlist-selected-name"> Playlist: {name1}</p>}
+          <div className="playlist-shuffle-toggle">
+            <input
+              type="checkbox"
+              id="shuffle1"
+              checked={shuffle1}
+              onChange={(e) => setShuffle1(e.target.checked)}
+            />
+            <label htmlFor="shuffle1">셔플 재생</label>
+          </div>
+
+          {name1 && (
+            <p className="playlist-selected-name">Playlist: {name1}</p>
+          )}
 
           <PlaylistSelector
             token={token}
@@ -135,8 +175,14 @@ const MusicLabPage2 = () => {
 
         {/* Playlist 2 */}
         <div className="music-lab-block">
-        <h3 className="playlist-block-title">🎵 Playlist 2</h3>
-          {image2 && <img src={image2} alt="playlist2 cover" className="playlist-cover" />}
+          <h3 className="playlist-block-title">🎵 Playlist 2</h3>
+          {image2 && (
+            <img
+              src={image2}
+              alt="playlist2 cover"
+              className="playlist-cover"
+            />
+          )}
 
           <div className="playlist-time-input">
             <label htmlFor="time2">재생 시간</label>
@@ -150,7 +196,19 @@ const MusicLabPage2 = () => {
             <span>초</span>
           </div>
 
-          {name2 && <p className="playlist-selected-name">Playlist: {name2}</p>}
+          <div className="playlist-shuffle-toggle">
+            <input
+              type="checkbox"
+              id="shuffle2"
+              checked={shuffle2}
+              onChange={(e) => setShuffle2(e.target.checked)}
+            />
+            <label htmlFor="shuffle2">셔플 재생</label>
+          </div>
+
+          {name2 && (
+            <p className="playlist-selected-name">Playlist: {name2}</p>
+          )}
 
           <PlaylistSelector
             token={token}
@@ -177,7 +235,8 @@ const MusicLabPage2 = () => {
 
       {isRunning && (
         <p className="music-lab-status">
-          🔁 현재 재생 중: Playlist {playingIndex + 1} ({playingIndex === 0 ? time1 : time2}초)
+          🔁 현재 재생 중: Playlist {playingIndex + 1} (
+          {playingIndex === 0 ? time1 : time2}초)
         </p>
       )}
     </div>
