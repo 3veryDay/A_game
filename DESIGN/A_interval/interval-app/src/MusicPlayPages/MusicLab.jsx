@@ -1,10 +1,7 @@
 // ✅ 사용자의 플레이리스트를 불러오고 선택할 수 있는 컴포넌트
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import MusicLabRecommendations from "../components/MusicLabRecommendations";
-import PlaylistSelector from '../components/PlaylistSelector';
-
-const MusicLabPage = () => {
+const MusicLab = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [token, setToken] = useState(location.state?.token || null);
@@ -132,118 +129,58 @@ const MusicLabPage = () => {
   };
 
   return (
-    <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold">🎛️ Music Lab</h1>
-      {/* ✅ 인터벌 설정 페이지 이동 버튼 */}
-      <div className="mt-4">
-        <button
-          className="bg-purple-600 text-white px-4 py-2 rounded"
-          onClick={() => navigate("/music-lab-interval", {
+    <div style={styles.container}>
+      <h1 style={styles.title}>🎛️ Music Lab</h1>
+  
+      <button
+        style={styles.button}
+        onClick={() =>
+          navigate("/music-lab-interval", {
             state: {
               token,
               deviceId,
             },
-          })}
-        >
-          ⏭️ 다음 인터벌 설정 페이지로 이동
-        </button>
-      </div>
-
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold">🔍 곡 검색</h2>
-        <div className="flex items-center space-x-2">
-          <input
-            className="border rounded px-2 py-1 w-96"
-            type="text"
-            placeholder="검색어 입력"
-            value={keyword}
-            onChange={e => setKeyword(e.target.value)}
-          />
-          <button className="bg-purple-600 text-white px-4 py-1 rounded" onClick={searchTracks}>검색</button>
-        </div>
-        <ul className="mt-2 space-y-1">
-          {searchResults.map(track => {
-            const uri = `spotify:track:${track.id}`;
-            return (
-              <li
-                key={track.id}
-                onClick={() => setTrackUri(uri)}
-                className={`cursor-pointer px-2 py-1 rounded transition-colors duration-150 hover:bg-gray-200 ${uri === trackUri ? 'bg-green-100 font-semibold' : ''}`}
-              >
-                🎵 {track.name} - {track.artists.map(a => a.name).join(', ')}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      <div className="space-y-2">
-        <input
-          className="border rounded px-2 py-1 mr-2 w-96"
-          type="text"
-          value={trackUri}
-          onChange={e => setTrackUri(e.target.value)}
-          placeholder="Enter Spotify Track URI"
-        />
-        <button className="bg-blue-500 text-white px-4 py-1 rounded" onClick={fetchTrackInfo}>정보 조회</button>
-      </div>
-
-      {trackInfo && (
-        <div className="border p-4 rounded shadow">
-          <h2 className="text-xl font-semibold">🎵 {trackInfo.name}</h2>
-          <p>👤 아티스트: {trackInfo.artists?.map(a => a.name).join(", ")}</p>
-          <p>💽 앨범: {trackInfo.album?.name}</p>
-          {trackInfo.album?.images?.[0]?.url && (
-            <img
-              src={trackInfo.album.images[0].url}
-              alt="앨범 커버"
-              className="rounded shadow"
-              style={{ width: '300px', height: '300px', objectFit: 'cover' }}
-            />
-          )}
-        </div>
-      )}
-
-      <div className="flex items-center space-x-4">
-        <button className="bg-green-500 text-white px-4 py-2 rounded" onClick={() => controlPlayback('play')}>▶️ 재생</button>
-        <button className="bg-yellow-500 text-white px-4 py-2 rounded" onClick={() => controlPlayback('pause')}>⏸️ 정지</button>
-        <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={() => controlPlayback('previous')}>⏮️ 이전</button>
-        <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={() => controlPlayback('next')}>⏭️ 다음</button>
-      </div>
-
-      <MusicLabRecommendations
-        token={token}
-        deviceId={deviceId}
-        currentTrackId={trackUri?.replace("spotify:track:", "")}
-        artistId={trackInfo?.artists?.[0]?.id}
-      />
-
-      <PlaylistSelector
-        token={token}
-        onSelect={(playlistUri) => {
-          playPlaylist(playlistUri);
-        }}
-      />
-
-      
-
-      <div className="h-2 bg-gray-200 rounded-full mt-6">
-        <div className="w-1/3 h-full bg-green-500 rounded-full" />
-      </div>
-
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold">🔊 볼륨</h2>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={volume}
-          onChange={e => changeVolume(e.target.value)}
-        />
-        <span className="ml-2">{volume}%</span>
-      </div>
+          })
+        }
+        onMouseEnter={(e) => (e.target.style.backgroundColor = "#1ed760")}
+        onMouseLeave={(e) => (e.target.style.backgroundColor = "#1DB954")}
+      >
+        ⏭️ 다음 인터벌 설정 페이지로 이동
+      </button>
     </div>
   );
+  
 };
 
-export default MusicLabPage;
+export default MusicLab;
+const styles = {
+    container: {
+      padding: "2.5rem",
+      minHeight: "100vh",
+      backgroundColor: "#121212",
+      color: "white",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "2rem",
+    },
+    title: {
+      fontSize: "2rem",
+      fontWeight: "bold",
+      color: "#1DB954", // Spotify Green
+    },
+    button: {
+      backgroundColor: "#1DB954",
+      color: "#000",
+      padding: "0.75rem 1.5rem",
+      fontSize: "1rem",
+      fontWeight: "600",
+      border: "none",
+      borderRadius: "1.5rem",
+      cursor: "pointer",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+      transition: "background-color 0.3s",
+    },
+  };
+  

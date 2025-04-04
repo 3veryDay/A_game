@@ -9,9 +9,8 @@ import Page5Result from './interval_setup_pages/Page5Result';
 import DashboardPage from './Login page/DashboardPage';
 import LoginPage from './Login page/Login_spotify';
 
+import MusicLab from './MusicPlayPages/MusicLab';
 import MusicPlayerPage from './MusicPlayPages/MusicPlayerPage';
-
-import MusicLabPage from './MusicPlayPages/MusicLabPage';
 import MusicLabPage2 from './MusicPlayPages/MusicLabPage2';
 function App() {
   return (
@@ -32,7 +31,7 @@ function App() {
           <Route path="/play" element = {<MusicPlayerPage />} />
 
 
-          <Route path="/music-lab" element={<MusicLabPage />} />
+          <Route path="/music-lab" element={<MusicLab />} />
           <Route path="/music-lab-interval" element={<MusicLabPage2  />} />
 
         </Routes>

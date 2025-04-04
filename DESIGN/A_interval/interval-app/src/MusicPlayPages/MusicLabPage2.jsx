@@ -137,17 +137,37 @@ const MusicLabPage2 = () => {
             />
           )}
 
-          <div className="playlist-time-input">
-            <label htmlFor="time1">재생 시간</label>
-            <input
-              id="time1"
-              type="number"
-              min="5"
-              value={time1}
-              onChange={(e) => setTime1(Number(e.target.value))}
-            />
-            <span>초</span>
-          </div>
+<div className="playlist-time-input">
+  <label htmlFor="minutes">재생 시간</label>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+    <input
+      id="minutes"
+      type="number"
+      min="0"
+      value={Math.floor(time1 / 60)}
+      onChange={(e) => {
+        const minutes = Number(e.target.value);
+        const seconds = time1 % 60;
+        setTime1(minutes * 60 + seconds);
+      }}
+    />
+    <span>분</span>
+    <input
+      id="seconds"
+      type="number"
+      min="0"
+      max="59"
+      value={time1 % 60}
+      onChange={(e) => {
+        const seconds = Number(e.target.value);
+        const minutes = Math.floor(time1 / 60);
+        setTime1(minutes * 60 + seconds);
+      }}
+    />
+    <span>초</span>
+  </div>
+</div>
+
 
           <div className="playlist-shuffle-toggle">
             <input
@@ -184,17 +204,37 @@ const MusicLabPage2 = () => {
             />
           )}
 
-          <div className="playlist-time-input">
-            <label htmlFor="time2">재생 시간</label>
-            <input
-              id="time2"
-              type="number"
-              min="5"
-              value={time2}
-              onChange={(e) => setTime2(Number(e.target.value))}
-            />
-            <span>초</span>
-          </div>
+<div className="playlist-time-input">
+  <label htmlFor="minutes">재생 시간</label>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+    <input
+      id="minutes"
+      type="number"
+      min="0"
+      value={Math.floor(time1 / 60)}
+      onChange={(e) => {
+        const minutes = Number(e.target.value);
+        const seconds = time1 % 60;
+        setTime1(minutes * 60 + seconds);
+      }}
+    />
+    <span>분</span>
+    <input
+      id="seconds"
+      type="number"
+      min="0"
+      max="59"
+      value={time1 % 60}
+      onChange={(e) => {
+        const seconds = Number(e.target.value);
+        const minutes = Math.floor(time1 / 60);
+        setTime1(minutes * 60 + seconds);
+      }}
+    />
+    <span>초</span>
+  </div>
+</div>
+
 
           <div className="playlist-shuffle-toggle">
             <input

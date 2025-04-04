@@ -69,6 +69,14 @@ const DashboardPage = () => {
   const goToMusicPlayer = () => {
     navigate("/play");
   };
+  
+  const goToInterval = () => {
+    navigate("/music-lab-interval", {
+      state : {
+        token : tokenData.accessToekn,
+      }
+    })
+  }
 
   const premiumSignupUrl = "https://www.spotify.com/premium/";
 
