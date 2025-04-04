@@ -14,7 +14,7 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
+                registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
@@ -23,3 +23,10 @@ public class WebConfig {
         };
     }
 }
+
+/*
+.allowedOrigins("https://your-frontend.com") // 정확한 도메인 지정
+.allowedMethods("GET", "POST") // 정말 필요한 메서드만
+.allowedHeaders("Content-Type", "Authorization") // 필요한 헤더만
+.addMapping("/api/**") // API 경로만 허용
+ */

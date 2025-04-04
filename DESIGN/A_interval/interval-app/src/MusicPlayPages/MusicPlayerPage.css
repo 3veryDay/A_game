@@ -1,0 +1,92 @@
+/* MusicPlayerPage.css */
+
+.music-container {
+    background-color: #121212;
+    color: white;
+    min-height: 100vh;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Helvetica Neue", sans-serif;
+  }
+  
+  .music-header {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #1db954;
+  }
+  
+  .user-greeting {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  
+  .music-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+  
+  .music-button {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .music-button:hover {
+    background-color: #1ed760;
+  }
+  
+  .music-input-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .music-input {
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    width: 200px;
+    background-color: #282828;
+    color: white;
+  }
+  
+  .music-select {
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    background-color: #282828;
+    color: white;
+  }
+  
+  .music-results {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .music-results li {
+    background-color: #1e1e1e;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .music-results li:hover {
+    background-color: #2a2a2a;
+  }
+  
